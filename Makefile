@@ -35,8 +35,8 @@ sequential: dirs $(SEQ_TARGETS)
 $(BIN_DIR)/jacobi: $(SEQ_DIR)/jacobi.c $(SEQ_DIR)/laplace_common.h
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
-$(BIN_DIR)/gauss_seidel: $(SEQ_DIR)/gauss_seidel.c $(SEQ_DIR)/laplace_common.h
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+# $(BIN_DIR)/gauss_seidel: $(SEQ_DIR)/gauss_seidel.c $(SEQ_DIR)/laplace_common.h
+# 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 $(BIN_DIR)/sor: $(SEQ_DIR)/sor.c $(SEQ_DIR)/laplace_common.h
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)

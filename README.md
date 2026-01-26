@@ -72,8 +72,8 @@ make clean
 ./bin/jacobi 100 1e-6 50000
 
 # Gauss-Seidel
-./bin/gauss_seidel [grid_size] [tolerance] [max_iterations]
-./bin/gauss_seidel 100 1e-6 50000
+# ./bin/gauss_seidel [grid_size] [tolerance] [max_iterations]
+# ./bin/gauss_seidel 100 1e-6 50000
 
 # SOR (Successive Over-Relaxation)
 ./bin/sor [grid_size] [tolerance] [max_iterations] [use_redblack] [omega]
