@@ -76,12 +76,23 @@ static inline void print_grid(double *u, int n, const char *label)
     }
     else
     {
-        printf("(Matrix too large, showing corners)\n");
-        printf("Top-left 5x5:\n");
+        printf("(Corner-only because of n > 20)\n");
+        printf("Top-left:\n");
         for (int row = 0; row < 5; row++)
         {
             for (int col = 0; col < 5; col++)
+            {
                 printf("%7.2f ", u[row * size + col]);
+            }
+            printf("\n");
+        }
+        printf("Bottom-right:\n");
+        for (int row = size - 5; row < size; row++)
+        {
+            for (int col = size - 5; col < size; col++)
+            {
+                printf("%7.2f ", u[row * size + col]);
+            }
             printf("\n");
         }
     }
