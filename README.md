@@ -111,25 +111,6 @@ Giải phương trình Laplace trên miền vuông [0,1] × [0,1] với điều 
 - **Biên trái**: u = 0
 - **Biên phải**: u = 100
 
-## Kết quả mong đợi
-
-### So sánh số vòng lặp (grid 50×50, tolerance 10⁻⁶)
-
-| Phương pháp | Iterations | Thời gian (tương đối) |
-|-------------|------------|----------------------|
-| Jacobi | ~15,000 | 1.0x |
-| Gauss-Seidel | ~7,500 | 0.5x |
-| SOR (ω ≈ 1.87) | ~300 | 0.02x |
-
-### Scalability test (Parallel Jacobi, grid 100×100)
-
-| Processors | Speedup | Efficiency |
-|------------|---------|------------|
-| 1 | 1.0 | 100% |
-| 2 | ~1.8 | ~90% |
-| 4 | ~3.2 | ~80% |
-| 8 | ~5.5 | ~69% |
-
 ## Output files
 
 Sau khi chạy, chương trình tạo ra các file `.dat` chứa nghiệm:
@@ -187,7 +168,3 @@ Phase 1: Cập nhật tất cả điểm RED (i+j chẵn)
 Phase 2: Cập nhật tất cả điểm BLACK (i+j lẻ)
 # Mỗi phase có thể thực hiện song song hoàn toàn
 ```
-
-## License
-
-Educational use only - Master's Course Project.
