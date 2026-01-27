@@ -45,11 +45,14 @@ int main(int argc, char *argv[])
 
     double t0 = get_time();
     double delta;
-    for (int iter = 1; iter <= max_iter; iter++)
+    int iter;
+    for (iter = 1; iter <= max_iter; iter++)
     {
         delta = jacobi_iterate(u, new_u, n);
         if (delta < tol)
+        {
             break;
+        }
         double *tmp = u;
         u = new_u;
         new_u = tmp;
@@ -60,7 +63,7 @@ int main(int argc, char *argv[])
     }
 
     double t1 = get_time();
-    print_result("Jacobi", n, max_iter, delta, t1 - t0);
+    print_result("Jacobi", n, iter, delta, t1 - t0);
     print_grid(new_u, n, "Final Solution");
     free_grid(u);
     free_grid(new_u);

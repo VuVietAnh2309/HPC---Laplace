@@ -78,7 +78,8 @@ int main(int argc, char *argv[])
 
     double t0 = get_time();
     double delta;
-    for (int iter = 1; iter <= max_iter; iter++)
+    int iter;
+    for (iter = 1; iter <= max_iter; iter++)
     {
         delta = redblack ? sor_step_redblack(u, n, omega)
                          : sor_step_rowwise(u, n, omega);
@@ -93,7 +94,7 @@ int main(int argc, char *argv[])
     }
 
     double t1 = get_time();
-    print_result("SOR", n, max_iter, delta, t1 - t0);
+    print_result("SOR", n, iter, delta, t1 - t0);
     print_grid(u, n, "Final Solution");
     free_grid(u);
     return 0;
