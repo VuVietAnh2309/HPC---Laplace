@@ -1,3 +1,7 @@
+/*
+ * laplace_common.h - Unified utilities for Laplace solvers
+ */
+
 #ifndef LAPLACE_COMMON_H
 #define LAPLACE_COMMON_H
 
@@ -5,7 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <time.h>
+#include <mpi.h>
 
 #define DEFAULT_N 100
 #define DEFAULT_MAX_ITER 100000
@@ -16,14 +20,13 @@
 #define BC_RIGHT 100.0
 #define INIT_VAL 50.0
 
-static inline double *alloc_grid(int n)
+static inline double *alloc_grid(int rows, int cols)
 {
-    int size = n + 2;
-    double *u = (double *)malloc(size * size * sizeof(double));
+    double *u = (double *)malloc(rows * cols * sizeof(double));
     if (!u)
     {
         fprintf(stderr, "Err: malloc failed\n");
-        exit(1);
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     return u;
 }
@@ -33,32 +36,45 @@ static inline void free_grid(double *u)
     free(u);
 }
 
-static inline void init_grid(double *u, int n)
+static inline void init_grid(double *u, int nrows, int n, int rank, int nprocs)
 {
     int size = n + 2;
-    for (int row = 0; row < size; row++)
+    for (int i = 0; i < nrows + 2; i++)
     {
-        for (int col = 0; col < size; col++)
+        for (int j = 0; j < size; j++)
         {
-            u[row * size + col] = INIT_VAL;
+            u[i * size + j] = INIT_VAL;
         }
     }
-    for (int col = 0; col < size; col++)
+    for (int i = 0; i < nrows + 2; i++)
     {
-        u[0 * size + col] = BC_TOP;
-        u[(n + 1) * size + col] = BC_BOTTOM;
+        u[i * size + 0] = BC_LEFT;
+        u[i * size + (n + 1)] = BC_RIGHT;
     }
-    for (int row = 0; row < size; row++)
+    if (rank == 0)
     {
-        u[row * size + 0] = BC_LEFT;
-        u[row * size + (n + 1)] = BC_RIGHT;
+        for (int j = 0; j < size; j++)
+            u[0 * size + j] = BC_TOP;
+    }
+    if (rank == nprocs - 1)
+    {
+        for (int j = 0; j < size; j++)
+            u[(nrows + 1) * size + j] = BC_BOTTOM;
     }
 }
 
-static inline void copy_grid(double *u_new, double *u_old, int n)
+static inline void exchange_rows(double *u, int nrows, int n, int rank, int nprocs)
 {
     int size = n + 2;
-    memcpy(u_new, u_old, size * size * sizeof(double));
+    MPI_Status st;
+    if (rank > 0)
+        MPI_Sendrecv(&u[1 * size], size, MPI_DOUBLE, rank - 1, 0,
+                     &u[0 * size], size, MPI_DOUBLE, rank - 1, 1,
+                     MPI_COMM_WORLD, &st);
+    if (rank < nprocs - 1)
+        MPI_Sendrecv(&u[nrows * size], size, MPI_DOUBLE, rank + 1, 1,
+                     &u[(nrows + 1) * size], size, MPI_DOUBLE, rank + 1, 0,
+                     MPI_COMM_WORLD, &st);
 }
 
 static inline void print_grid(double *u, int n, const char *label)
@@ -101,14 +117,8 @@ static inline void print_grid(double *u, int n, const char *label)
 static inline void print_result(const char *method, int n, int iter, double delta, double t)
 {
     printf("\n=== %s Results ===\n", method);
-    printf("Grid: %d x %d, Iterations: %d, Final delta: %.2e, Time: %.4f sec\n", n, n, iter, delta, t);
-}
-
-static inline double get_time()
-{
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return ts.tv_sec + ts.tv_nsec * 1e-9;
+    printf("Grid: %d x %d, Iterations: %d, Final delta: %.2e, Time: %.4f sec\n",
+           n, n, iter, delta, t);
 }
 
 #endif

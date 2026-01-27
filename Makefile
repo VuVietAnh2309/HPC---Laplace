@@ -15,8 +15,8 @@ PAR_DIR = src/parallel
 BIN_DIR = bin
 
 # Sequential targets
-SEQ_SOURCES = $(SEQ_DIR)/jacobi.c $(SEQ_DIR)/gauss_seidel.c $(SEQ_DIR)/sor.c
-SEQ_TARGETS = $(BIN_DIR)/jacobi $(BIN_DIR)/gauss_seidel $(BIN_DIR)/sor
+SEQ_SOURCES = $(SEQ_DIR)/jacobi.c $(SEQ_DIR)/sor.c
+SEQ_TARGETS = $(BIN_DIR)/jacobi $(BIN_DIR)/sor
 
 # Parallel targets
 PAR_SOURCES = $(PAR_DIR)/jacobi_mpi.c $(PAR_DIR)/sor_mpi.c
@@ -33,9 +33,6 @@ dirs:
 sequential: dirs $(SEQ_TARGETS)
 
 $(BIN_DIR)/jacobi: $(SEQ_DIR)/jacobi.c $(SEQ_DIR)/laplace_common.h
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
-
-$(BIN_DIR)/gauss_seidel: $(SEQ_DIR)/gauss_seidel.c $(SEQ_DIR)/laplace_common.h
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 $(BIN_DIR)/sor: $(SEQ_DIR)/sor.c $(SEQ_DIR)/laplace_common.h
@@ -59,9 +56,6 @@ clean:
 run-jacobi: $(BIN_DIR)/jacobi
 	./$(BIN_DIR)/jacobi 50 1e-6 50000
 
-run-gauss-seidel: $(BIN_DIR)/gauss_seidel
-	./$(BIN_DIR)/gauss_seidel 50 1e-6 50000
-
 run-sor: $(BIN_DIR)/sor
 	./$(BIN_DIR)/sor 50 1e-6 10000
 
@@ -75,9 +69,6 @@ run-sor-mpi: $(BIN_DIR)/sor_mpi
 test-sequential: sequential
 	@echo "=== Testing Jacobi ==="
 	./$(BIN_DIR)/jacobi 30 1e-4 10000
-	@echo ""
-	@echo "=== Testing Gauss-Seidel ==="
-	./$(BIN_DIR)/gauss_seidel 30 1e-4 10000
 	@echo ""
 	@echo "=== Testing SOR ==="
 	./$(BIN_DIR)/sor 30 1e-4 1000
@@ -97,9 +88,6 @@ compare: sequential
 	@echo "=== Jacobi ==="
 	@./$(BIN_DIR)/jacobi 50 1e-6 100000
 	@echo ""
-	@echo "=== Gauss-Seidel ==="
-	@./$(BIN_DIR)/gauss_seidel 50 1e-6 100000
-	@echo ""
 	@echo "=== SOR (optimal omega) ==="
 	@./$(BIN_DIR)/sor 50 1e-6 10000
 
@@ -113,5 +101,5 @@ scalability: parallel
 		echo ""; \
 	done
 
-.PHONY: all dirs sequential parallel clean run-jacobi run-gauss-seidel run-sor \
+.PHONY: all dirs sequential parallel clean run-jacobi run-sor \
         run-jacobi-mpi run-sor-mpi test-sequential test-parallel compare scalability

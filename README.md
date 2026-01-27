@@ -14,7 +14,6 @@ HPC/
 │   ├── sequential/                # Code tuần tự
 │   │   ├── laplace_common.h       # Header chung
 │   │   ├── jacobi.c               # Jacobi iteration
-│   │   ├── gauss_seidel.c         # Gauss-Seidel iteration
 │   │   └── sor.c                  # SOR với Red-Black ordering
 │   └── parallel/                  # Code song song (MPI)
 │       ├── jacobi_mpi.c           # Parallel Jacobi
@@ -71,10 +70,6 @@ make clean
 ./bin/jacobi [grid_size] [tolerance] [max_iterations]
 ./bin/jacobi 100 1e-6 50000
 
-# Gauss-Seidel
-./bin/gauss_seidel [grid_size] [tolerance] [max_iterations]
-./bin/gauss_seidel 100 1e-6 50000
-
 # SOR (Successive Over-Relaxation)
 ./bin/sor [grid_size] [tolerance] [max_iterations] [use_redblack] [omega]
 ./bin/sor 100 1e-6 10000 1        # Với red-black ordering, omega tự động tối ưu
@@ -115,7 +110,6 @@ Giải phương trình Laplace trên miền vuông [0,1] × [0,1] với điều 
 
 Sau khi chạy, chương trình tạo ra các file `.dat` chứa nghiệm:
 - `jacobi_solution.dat`
-- `gauss_seidel_solution.dat`
 - `sor_solution.dat`
 - `jacobi_mpi_solution.dat`
 - `sor_mpi_solution.dat`
@@ -145,12 +139,6 @@ splot 'sor_solution.dat' using 1:2:3 with lines title 'Temperature'
 ### Jacobi Iteration
 ```
 u_new[i][j] = 0.25 * (u_old[i-1][j] + u_old[i+1][j] + u_old[i][j-1] + u_old[i][j+1])
-```
-
-### Gauss-Seidel Iteration
-```
-u[i][j] = 0.25 * (u[i-1][j] + u[i+1][j] + u[i][j-1] + u[i][j+1])
-# Sử dụng giá trị mới ngay khi có
 ```
 
 ### SOR (Successive Over-Relaxation)
