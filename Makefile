@@ -19,10 +19,8 @@ SEQ_SOURCES = $(SEQ_DIR)/jacobi.c $(SEQ_DIR)/sor.c
 SEQ_TARGETS = $(BIN_DIR)/jacobi $(BIN_DIR)/sor
 
 # Parallel targets
-PAR_SOURCES = $(PAR_DIR)/jacobi_mpi.c $(PAR_DIR)/sor_mpi.c \
-              $(PAR_DIR)/jacobi_omp.c $(PAR_DIR)/sor_omp.c
-PAR_TARGETS = $(BIN_DIR)/jacobi_mpi $(BIN_DIR)/sor_mpi \
-              $(BIN_DIR)/jacobi_omp $(BIN_DIR)/sor_omp
+PAR_SOURCES = $(PAR_DIR)/jacobi_mpi.c $(PAR_DIR)/sor_mpi.c
+PAR_TARGETS = $(BIN_DIR)/jacobi_mpi $(BIN_DIR)/sor_mpi
 
 # Default target
 all: dirs sequential parallel
@@ -48,12 +46,6 @@ $(BIN_DIR)/jacobi_mpi: $(PAR_DIR)/jacobi_mpi.c
 
 $(BIN_DIR)/sor_mpi: $(PAR_DIR)/sor_mpi.c
 	$(MPICC) $(CFLAGS) -o $@ $< $(LDFLAGS)
-
-$(BIN_DIR)/jacobi_omp: $(PAR_DIR)/jacobi_omp.c
-	$(CC) $(CFLAGS) -fopenmp -o $@ $< $(LDFLAGS)
-
-$(BIN_DIR)/sor_omp: $(PAR_DIR)/sor_omp.c
-	$(CC) $(CFLAGS) -fopenmp -o $@ $< $(LDFLAGS)	
 
 # Clean
 clean:
