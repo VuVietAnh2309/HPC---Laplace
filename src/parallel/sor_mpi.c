@@ -126,6 +126,22 @@ int main(int argc, char *argv[])
     if (rank == 0)
     {
         print_grid(global_grid, n, "Final Solution");
+
+        FILE *fp = fopen("solution/sor_mpi_solution.dat", "w");
+        if (fp)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    fprintf(fp, "%d %d %.6f\n", i, j, global_grid[i * size + j]);
+                }
+                fprintf(fp, "\n");
+            }
+            fclose(fp);
+            printf("Solution written to sor_mpi_solution.dat\n");
+        }
+
         free(global_grid);
         free(rcnts);
         free(displs);
