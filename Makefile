@@ -84,5 +84,18 @@ scalability: parallel
 		echo ""; \
 	done
 
+# Benchmark
+benchmark: sequential parallel
+	@echo "Benchmark for SOR and MPI SOR"
+	@echo ""
+	@for i in 50 100 200 400 800; do \
+		echo ""; \
+		mpirun -np 6 ./$(BIN_DIR)/sor_mpi $$i 1e-6 10000; \
+		echo ""; \
+		./$(BIN_DIR)/sor $$i 1e-6 10000; \
+		echo ""; \
+	done
+
+
 .PHONY: all dirs sequential parallel clean run-sor run-sor-mpi \
         test-sequential test-parallel visualize scalability
