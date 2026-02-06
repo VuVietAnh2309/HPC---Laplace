@@ -96,6 +96,23 @@ int main(int argc, char *argv[])
     double t1 = get_time();
     print_result("SOR", n, iter, delta, t1 - t0);
     print_grid(u, n, "Final Solution");
+
+    FILE *fp = fopen("solution/sor_solution.dat", "w");
+    if (fp)
+    {
+        int size = n + 2;
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                fprintf(fp, "%d %d %.6f\n", i, j, u[i * size + j]);
+            }
+            fprintf(fp, "\n");
+        }
+        fclose(fp);
+        printf("Solution written to sor_solution.dat\n");
+    }
+
     free_grid(u);
     return 0;
 }
